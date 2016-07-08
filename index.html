@@ -1,1 +1,128 @@
-helloo
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Redditv</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="info">
+        	<div id="title"></div>
+        	<div id="desc"></div>
+        </div>
+        <div id="player"></div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://www.youtube.com/player_api"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+        <style type="text/css">
+        	#info{
+        		position: fixed;
+        		padding: 8px;
+        		min-width: 200px;
+        		background-color: black;
+        		opacity: 0.8;
+        		border-radius: 2px;
+        		bottom: 6px;	
+        		font-family: sans-serif;
+        	}
+        	#title{
+        		color: white;
+        	}
+        	#desc{
+        		color: white;
+        	}
+        	body{
+	        	background-color: blue;
+	        	overflow: hidden;
+	        	background:  url(noise.gif) no-repeat center center fixed; 
+	        	background-size: cover;
+	        }
+	        iframe{
+	        	margin: -8px;
+	        	z-index: 1;
+	        }
+        </style>
+        <script type="text/javascript">
+        	var player;
+        	var vid;
+        	var videos=[];
+        	var current=0;
+
+	        // autoplay video
+	        function onPlayerReady(event) {
+	            event.target.playVideo();
+	        }
+
+	        // when video ends
+	        function onPlayerStateChange(event) {        
+	            if(event.data === 0) {        
+	            	event.target.destroy();  
+	                playVideo(videos[current]);
+	                current+=1;
+	            }
+	        }
+
+	        $(document).ready(function() {
+		        var hash = window.location.hash.substring(1);
+		        if(hash==='')
+		        	hash='/r/youtubehaiku';
+	        	$.get('https://www.reddit.com'+hash+'.json',function(s){
+	        		for (var i = 1; i < s.data.children.length; i++) {
+	        			try{
+	        				var video={};
+	        				if(s.data.children[i].data.media.type==='youtube.com'){
+	        					video.type='youtube.com';
+	        					video.id=s.data.children[i].data.media.oembed.html.split('embed/')[1].split('?')[0];
+	        					video.title=s.data.children[i].data.media.oembed.title;
+	        				}
+	        				videos.push(video);
+	        			}catch(e){
+	        				//TODO: help!
+	        				console.log(e,'Currently not supported: ',s.data.children[i].data.domain);	
+	        			}
+	        		}
+
+	        		playVideo(videos[current]);
+	        		current+=1;
+	        	});
+	        });
+        	function playVideo (video) {
+       		      player = new YT.Player('player', {
+       			  height: $(window).height(),
+       			  width: $(window).width(),
+       			  videoId: video.id,
+       			  playerVars: { 
+				         'controls': 0, 
+				         'rel' : 0,
+				         'showinfo':0
+				  },
+       			  events: {
+       			    'onReady': onPlayerReady,
+       			    'onStateChange': onPlayerStateChange
+       			  }
+       			});
+       		    $('#title').text(video.title);
+        	}
+        </script>
+    </body>
+</html>
