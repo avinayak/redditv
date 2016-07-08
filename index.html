@@ -174,8 +174,9 @@
                                 video.author=s.data.children[i].data.author;
                                 video.score=s.data.children[i].data.score;
                                 video.permalink=s.data.children[i].data.permalink;
+                                videos.push(video);
                             }
-                            videos.push(video);
+                            
                         }catch(e){
                             //TODO: help!
                             console.log('Currently not supported: ',s.data.children[i].data.domain);  
