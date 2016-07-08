@@ -16,11 +16,16 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div id="info">
-        	<div id="title"></div>
-        	<div id="desc"></div>
+        <a id="infolink" href="" target="_blank">
+            <div id="info">
+                <div id="title">Loading...</div>
+                <div id="desc"></div>
+            </div>
+        </a>
+        <div id="cover"></div>
+        <div style="text-align: center">
+            <div id="player"></div>
         </div>
-        <div id="player"></div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://www.youtube.com/player_api"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
@@ -35,94 +40,169 @@
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
         <style type="text/css">
-        	#info{
-        		position: fixed;
-        		padding: 8px;
-        		min-width: 200px;
-        		background-color: black;
-        		opacity: 0.8;
-        		border-radius: 2px;
-        		bottom: 6px;	
-        		font-family: sans-serif;
-        	}
-        	#title{
-        		color: white;
-        	}
-        	#desc{
-        		color: white;
-        	}
-        	body{
-	        	background-color: blue;
-	        	overflow: hidden;
-	        	background:  url(noise.gif) no-repeat center center fixed; 
-	        	background-size: cover;
-	        }
-	        iframe{
-	        	margin: -8px;
-	        	z-index: 1;
-	        }
+            #info{
+                position: fixed;
+                padding: 8px;
+                min-width: 100px;
+                background-color: black;
+                opacity: 0.8;
+                border-radius: 2px;
+                bottom: 6px;    
+                font-family: sans-serif;
+                z-index: 100;
+            }
+
+            #cover{
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background: black;
+                margin: -8px;
+                opacity: .9;
+                z-index: -1;
+            }
+
+            #title{
+                color: white;
+            }
+
+            #desc{
+                color: white;
+                font-size: 10px;
+                padding: 4px 0px;
+            }
+            body{
+                background-color: blue;
+                overflow: hidden;
+                background:  url(noise.gif) no-repeat center center fixed; 
+                background-size: cover;
+            }
+            iframe{
+                margin: -8px;
+                z-index: 50;
+            }
         </style>
         <script type="text/javascript">
-        	var player;
-        	var vid;
-        	var videos=[];
-        	var current=0;
+            var player;
+            var vid;
+            var videos=[];
+            var current=0;
+            var hash;
+            var after="";
+            var subreddit='InterdimensionalCable';
+            // autoplay video
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
 
-	        // autoplay video
-	        function onPlayerReady(event) {
-	            event.target.playVideo();
-	        }
+            // when video ends
+            function onPlayerStateChange(event) {        
+                if(event.data === 0) {        
+                    nextVideo();
+                }
+            }
 
-	        // when video ends
-	        function onPlayerStateChange(event) {        
-	            if(event.data === 0) {        
-	            	event.target.destroy();  
-	                playVideo(videos[current]);
-	                current+=1;
-	            }
-	        }
+            function nextVideo () {
+                if(player)
+                    player.destroy(); 
+                $('#title').text('Loading...');
+                $('#desc').html("");
+                playVideo(videos[current]);
+                current+=1;
+                if(current>videos.length-1){
+                    fetchRedditPage (subreddit,after);
+                }
+            }
 
-	        $(document).ready(function() {
-		        var hash = window.location.hash.substring(1);
-		        if(hash==='')
-		        	hash='/r/youtubehaiku';
-	        	$.get('https://www.reddit.com'+hash+'.json',function(s){
-	        		for (var i = 1; i < s.data.children.length; i++) {
-	        			try{
-	        				var video={};
-	        				if(s.data.children[i].data.media.type==='youtube.com'){
-	        					video.type='youtube.com';
-	        					video.id=s.data.children[i].data.media.oembed.html.split('embed/')[1].split('?')[0];
-	        					video.title=s.data.children[i].data.media.oembed.title;
-	        				}
-	        				videos.push(video);
-	        			}catch(e){
-	        				//TODO: help!
-	        				console.log(e,'Currently not supported: ',s.data.children[i].data.domain);	
-	        			}
-	        		}
+            function previousVideo () {
+                if(current>0){
+                    if(player)
+                        player.destroy(); 
+                    $('#title').text('Loading...');
+                    $('#desc').html("");
+                    current-=1;
+                    playVideo(videos[current]);
+                    if(current>videos.length-1){
+                        fetchRedditPage (subreddit,after);
+                    }
+                }
+            }
 
-	        		playVideo(videos[current]);
-	        		current+=1;
-	        	});
-	        });
-        	function playVideo (video) {
-       		      player = new YT.Player('player', {
-       			  height: $(window).height(),
-       			  width: $(window).width(),
-       			  videoId: video.id,
-       			  playerVars: { 
-				         'controls': 0, 
-				         'rel' : 0,
-				         'showinfo':0
-				  },
-       			  events: {
-       			    'onReady': onPlayerReady,
-       			    'onStateChange': onPlayerStateChange
-       			  }
-       			});
-       		    $('#title').text(video.title);
-        	}
+            $(document).ready(function() {
+                hash = window.location.hash.substring(1);
+                if(!hash)
+                    window.location.hash=subreddit;
+                else{
+                    subreddit=hash;
+                    fetchRedditPage(subreddit);
+                }
+            });
+
+            $(window).on('hashchange', function() {
+                subreddit = window.location.hash.substring(1);
+                if(player)
+                    player.destroy();
+                videos=[];
+                current=0;
+                fetchRedditPage(subreddit);
+            });
+
+            $(window).keydown(function (e) {
+              if (e.keyCode === 39) {
+                e.preventDefault();
+                nextVideo();
+              }else if (e.keyCode === 37) {
+                e.preventDefault();
+                previousVideo();
+              }
+            })
+            
+            function fetchRedditPage (subreddit,after) {
+                var link='https://www.reddit.com/r/'+subreddit+'.json?after='+after;
+                $.get(link,function(s){
+                    for (var i = 0; i < s.data.children.length; i++) {
+                        try{
+                            var video={};
+                            if(s.data.children[i].data.media.type==='youtube.com'){
+                                video.type='youtube.com';
+                                video.id=s.data.children[i].data.media.oembed.html.split('embed/')[1].split('?')[0];
+                                video.title=s.data.children[i].data.media.oembed.title;
+                                video.author=s.data.children[i].data.author;
+                                video.score=s.data.children[i].data.score;
+                                video.permalink=s.data.children[i].data.permalink;
+                            }
+                            videos.push(video);
+                        }catch(e){
+                            //TODO: help!
+                            console.log('Currently not supported: ',s.data.children[i].data.domain);  
+                        }
+                    }
+                    after=s.data.after;
+                    playVideo(videos[current]);
+                    current+=1;
+                });
+            }
+            
+            function playVideo (video) {
+                  player = new YT.Player('player', {
+                  height: $(window).height(),
+                  width: $(window).width(),
+                  videoId: video.id,
+                  playerVars: { 
+                         'controls': 0, 
+                         'rel' : 0,
+                         'showinfo':0,
+                         'iv_load_policy':3
+                  },
+                  events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                  }
+                });
+                $('#title').text(video.title);
+                $('#desc').html("/r/"+subreddit+" &middot; /u/"+video.author+" &middot; &uArr; "+video.score);
+                $("#infolink").attr("href", "http://www.reddit.com"+video.permalink);
+            }
         </script>
     </body>
 </html>
