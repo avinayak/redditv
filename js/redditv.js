@@ -212,9 +212,13 @@
                     for (var i = 0; i < s.data.children.length; i++) {
                         try{
                             var video={};
-                            if(s.data.children[i].data.domain==='youtube.com'){
+                            if(s.data.children[i].data.domain.indexOf('youtu')!=-1 ){
                                 video.type='youtube.com';
-                                video.id=s.data.children[i].data.media.oembed.html.split('embed/')[1].split('?')[0];
+                                embed_code=s.data.children[i].data.media.oembed.html;
+                                if(embed_code.split('embed/').length>1)
+                                    video.id=embed_code.split('embed/')[1].split('?')[0];
+                                else
+                                    video.id = s.data.children[i].data.media.oembed.url.split("v=")[1];
                                 video.title=s.data.children[i].data.media.oembed.title;
                                 video.author=s.data.children[i].data.author;
                                 video.score=s.data.children[i].data.score;
@@ -224,6 +228,7 @@
                             
                         }catch(e){
                             //TODO: help! i need more video embed support!
+                            //I think Vines should be easy
                             console.log(e,'Currently not supported: ',s.data.children[i]);  
                         }
                     }
