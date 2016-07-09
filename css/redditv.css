@@ -1,0 +1,109 @@
+
+            .header {
+                border-bottom: 3px dashed;
+                padding: 15px 0px;
+            }
+            .shortcut{
+                font-size: 18px;
+            }
+            #channels-list{
+                margin: 48px 0px;
+            }
+            #channels {
+                font-family: 'VT323';
+                color: white;
+                position: fixed;
+                top: 0px;
+                display: none;
+                height: 100%;
+                font-size: 30px;
+                width: 100%;
+                text-align: center;
+                background-color: rgba(0, 0, 0, 0.9);
+                right: -15px;
+                padding-right: 15px;
+                z-index: 150;
+                overflow: auto;
+
+            }
+            #veil {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0px;
+                left: 0px;
+            }
+            a,a:focus{
+                text-decoration: none;
+                color: #fff
+            }
+
+            .ic-button{
+                cursor: pointer;
+            }
+
+            #channels-list > div{
+                margin:10px 0px;
+            }
+            #info{
+                position: fixed;
+                padding: 8px;
+                min-width: 100px;
+                border-radius: 2px;
+                bottom: 6px;    
+                font-family: sans-serif;
+                z-index: 100;
+                text-shadow: -1px 1px black;
+            }
+
+            #channel-name{
+                position: fixed;
+                padding: 16px;
+                min-width: 10px;
+                min-height: 10px;
+                top: 0px;
+                right: 0px;
+                margin: 10px;
+                text-shadow: -1px 1px black;
+                font-family: 'VT323';
+                color: white;
+                font-size: 40px;
+            }
+
+            #cover{
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background: black;
+                margin: -8px;
+                opacity: .9;
+                z-index: -1;
+            }
+
+            #title{
+                font-family: 'VT323' ;
+                color: white;
+                font-size: 20px;
+            }
+
+            .selected-channel{
+                border-bottom: 3px dashed;
+            }
+
+            #desc{
+                font-family: 'VT323';
+                color: white;
+                font-size: 15px;
+                padding: 4px 0px;
+            }
+            body{
+
+                background-color: blue;
+                overflow: hidden;
+                background:  url(noise.gif) no-repeat center center fixed; 
+                background-size: cover;
+            }
+            iframe{
+                margin: -8px;
+                z-index: 50;
+            }
