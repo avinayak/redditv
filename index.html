@@ -16,30 +16,6 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        
-        <div id="info">
-            <a id="infolink" href="" target="_blank"><div id="title"></div></a>
-            <div id="desc"></div>
-        </div>
-        <div id="channels" onclick="closeChannels()">
-            <ul id="channels-list" style="list-style: none;"></ul>
-            <div>
-                <div class="shortcut"> Up / Down - Change Channels </div>
-                <div class="shortcut"> Left / Right - Change Videos </div>
-                <div class="shortcut"> Space / K - Pause &amp Play </div>
-                <div class="shortcut"> c - See Channels Menu </div>
-            </div>
-        </div>
-        <div onclick="togglePlay()" id="veil"></div>
-        <div id="cover"></div>
-        <div style="text-align: center">
-            <div id="player"></div>
-        </div>
-
-        <div id="channel-name">
-            
-        </div>
-
         <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
@@ -62,6 +38,9 @@
             .shortcut{
                 font-size: 18px;
             }
+            #channels-list{
+                margin: 48px 0px;
+            }
             #channels {
                 font-family: 'VT323';
                 color: white;
@@ -77,6 +56,7 @@
                 padding-right: 15px;
                 z-index: 150;
                 overflow: auto;
+
             }
             #veil {
                 position: fixed;
@@ -94,7 +74,7 @@
                 cursor: pointer;
             }
 
-            #channels > ul > li{
+            #channels-list > div{
                 margin:10px 0px;
             }
             #info{
@@ -177,7 +157,6 @@
 
                     'AccidentalComedy',
                     'ArtisanVideos',
-                    'asmr',
                     'AwfulCommercials',
                     'CommercialCuts',
                     'ContagiousLaughter',
@@ -203,6 +182,7 @@
                     'Prematurecelebration',
                     'PublicFreakout',
                     'Roadcam',
+                    'StandUpComedy',
                     'streetfights',
                     'sweetjustice',
                     'TheWayWeWereOnVideo',
@@ -273,7 +253,7 @@
             $(document).ready(function() {
                 showLoading();
                 for (var i = 0; i < channels.length; i++) {
-                    $('#channels-list').html($('#channels-list').html()+'<li><a id="'+channels[i]+'-button" class="channel-button" href="#'+channels[i]+'">r/'+channels[i]+'</a></li>');
+                    $('#channels-list').html($('#channels-list').html()+'<div><a id="'+channels[i]+'-button" class="channel-button" href="#'+channels[i]+'">r/'+channels[i]+'</a></div>');
                 }
 
                 hash = window.location.hash.substring(1);
@@ -434,5 +414,29 @@
                 $("#infolink").attr("href", "http://www.reddit.com"+video.permalink);
             }
         </script>
+        <div id="info">
+            <a id="infolink" href="" target="_blank"><div id="title"></div></a>
+            <div id="desc"></div>
+        </div>
+        <div id="channels" onclick="closeChannels()">
+            <div id="channels-list"></div>
+            <div>
+                <div class="shortcut"> <strong>Shortcuts</strong> </div>
+                <div class="shortcut"> Up / Down - Change Channels </div>
+                <div class="shortcut"> Left / Right - Change Videos </div>
+                <div class="shortcut"> Space / K - Pause &amp Play </div>
+                <div class="shortcut"> C - See This Menu </div>
+            </div>
+        </div>
+        <div onclick="togglePlay()" id="veil"></div>
+        <div id="cover"></div>
+        <div style="text-align: center">
+            <div id="player"></div>
+        </div>
+        <div id="channel-name">
+            
+        </div>
+
+        
     </body>
 </html>
