@@ -15,6 +15,7 @@
                     'AccidentalComedy',
                     'ArtisanVideos',
                     'AwfulCommercials',
+                    'CombatFootage',
                     'CommercialCuts',
                     'ContagiousLaughter',
                     'ConTalks',
@@ -25,6 +26,7 @@
                     'Documentaries',
                     'EducativeVideos',
                     'FastWorkers',
+                    'fifthworldvideos',
                     'FightPorn',
                     'FuckingWithNature',
                     'HappyCrowds',
@@ -61,7 +63,7 @@
                 $("#channel-name").hide();
                 $("#channel-name").text("/r/"+window.location.hash.substring(1));
                 $("#channel-name").show();
-                chanShowTimeOut = setTimeout(function() { $("#channel-name").hide() }, 2000);
+                chanShowTimeOut = setTimeout(function() { $("#channel-name").hide(); }, 2000);
             }
 
             function togglePin () {                
@@ -176,7 +178,7 @@
                 e.preventDefault();
                 togglePlay();
               }
-            })
+            });
 
             function channelUp () {
                 chnum = channels.indexOf(subreddit);
