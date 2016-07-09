@@ -155,7 +155,7 @@
             var videos=[];
             var current=0;
             var hash;
-            var after="";
+            var after_id;
             var chanShowTimeOut;
             // Suggestions Welcome! Please Sort Alphabetically
             // Except First two. 
@@ -230,12 +230,12 @@
                 playVideo(videos[current]);
                 current+=1;
                 if(current>videos.length-1){
-                    fetchRedditPage (subreddit,after);
+                    fetchRedditPage (subreddit,after_id);
                 }
             }
 
             function showLoading () {
-                $('#title').text('Loading...');
+                $('#title').html(''); //<i class="fa fa-spinner fa-pulse fa-fw"></i>
                 $('#desc').html('');
             }
 
@@ -244,12 +244,12 @@
                     try{
                         player.destroy(); 
                     }catch(e){}
-                    $('#title').text('Loading...');
+                    $('#title').html('');//<i class="fa fa-spinner fa-pulse fa-fw"></i>
                     $('#desc').html("");
                     current-=1;
                     playVideo(videos[current]);
                     if(current>videos.length-1){
-                        fetchRedditPage (subreddit,after);
+                        fetchRedditPage (subreddit,after_id);
                     }
                 }
             }
@@ -268,6 +268,15 @@
                     fetchRedditPage(subreddit);
                 }
                 showChannelName();
+
+                // prevent missing videos from stopping
+                // auto playback
+                setInterval(function(){
+                    if(player)
+                        if(player.getPlayerState()==-1)
+                            nextVideo();
+                },10000);
+
             });
 
             function toggleChannels () {
@@ -286,6 +295,7 @@
                     player.destroy();
                 videos=[];
                 current=0;
+                after_id=null;
                 fetchRedditPage(subreddit);
                 
             });
@@ -309,6 +319,9 @@
               }else if (e.keyCode === 40) {
                 e.preventDefault();
                 channelDown();
+              }else if (e.keyCode === 32 || e.keyCode === 75|| e.keyCode === 107) {
+                e.preventDefault();
+                togglePlay();
               }
             })
 
@@ -355,9 +368,11 @@
                             console.log(e,'Currently not supported: ',s.data.children[i].data.domain);  
                         }
                     }
-                    after=s.data.after;
-                    playVideo(videos[current]);
-                    current+=1;
+                    if(!after_id){
+                        playVideo(videos[current]);
+                        current+=1;
+                    }
+                    after_id=s.data.after;
                 });
             }
 
