@@ -6,7 +6,7 @@ Features
 
 * Watch the most popular video content in couch mode
 * Subreddit not present in the channel list can be opened by changing hashlink ( /redditv/#TheSubredditName )
-* Infinite Content!
+* Infinite Content! :blush:
 
 
 TODO
