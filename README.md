@@ -1,5 +1,5 @@
-#Redditv 
-:tv: Leanback and enjoy reddit's video subreddits. [See it in action](https://avinayak.github.io/redditv/)
+#Redditv :tv:
+Leanback and enjoy reddit's video subreddits. [See it in action](https://avinayak.github.io/redditv/)
 
 Features
 --------
