@@ -1,3 +1,5 @@
+/*jshint multistr: true */
+
 var player;
 var vid;
 var videos=[];
@@ -311,7 +313,8 @@ $(document).ready(function() {
 
 function playVideo (video) {
     $("#info").hide();
-    lastFetchedChannel=video.channel;
+    if(video)
+        lastFetchedChannel=video.channel;
       player = new YT.Player('player', {
       height: $(window).height(),
       width: $(window).width(),
@@ -331,12 +334,25 @@ function playVideo (video) {
     showInfo(video);
 }
 
+function openInYouTube (id) {
+    player.pauseVideo();
+    var time = Math.floor(player.getCurrentTime());
+    if(time/60>0)
+        time=Math.floor(time/60)+"m"+(time%60)+"s";
+    window.open("http://www.youtube.com/watch?t="+time+"&v="+id, "_blank");
+}
+
 function showInfo (video) {
     try{clearTimeout(infoShowTimeOut);}catch(e){}
-    infoShowTimeOut=setTimeout(function() { $("#info").fadeIn(); },1000)
-    $('#title').text(video.title);
+    infoShowTimeOut=setTimeout(function() { $("#info").show(); },100);
+    $('#title').html(video.title);
     // <i onclick=toggleChannels() class="ic-button icon-rotate-90 icon-pushpin"></i>&nbsp&nbsp
     // un pinning ui
-    $('#desc').html('<i onclick=toggleChannels() class="ic-button fa fa-tv"></i>&nbsp&middot;&nbsp<i onclick=previousVideo() class="ic-button   fa fa-step-backward"></i>&nbsp&nbsp<i onclick=togglePlay() id="playbutton" class="ic-button fa fa-pause"></i>&nbsp&nbsp<i onclick=nextVideo() class="ic-button fa fa-step-forward"></i> &middot; /r/'+video.channel+" &middot; /u/"+video.author+' &middot; <i class="fa fa-arrow-up"></i> '+video.score);
+    $('#desc').html('<i onclick=toggleChannels() class="ic-button fa fa-tv"></i>&nbsp&nbsp\
+        <i onclick=openInYouTube("'+video.id+'") class="ic-button fa fa-youtube-play"></i>&nbsp&middot;\
+        &nbsp<i onclick=previousVideo() class="ic-button fa fa-step-backward"></i>&nbsp&nbsp\
+        <i onclick=togglePlay() id="playbutton" class="ic-button fa fa-pause"></i>&nbsp&nbsp\
+        <i onclick=nextVideo() class="ic-button fa fa-step-forward"></i> &middot; /r/\
+        '+video.channel+" &middot; /u/"+video.author+' &middot; <i class="fa fa-arrow-up"></i> '+video.score);
     $("#infolink").attr("href", "http://www.reddit.com"+video.permalink);
 }
