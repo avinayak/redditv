@@ -6,6 +6,7 @@ var hash;
 var ui_pinned=false;
 var after_id;
 var chanShowTimeOut;
+var infoShowTimeOut;
 var lastFetchedChannel;
 // Suggestions Welcome! Please Sort Alphabetically
 // Except First two. 
@@ -64,7 +65,7 @@ function showChannelName () {
     $("#channel-name").hide();
     $("#channel-name").text("/r/"+window.location.hash.substring(1));
     $("#channel-name").show();
-    chanShowTimeOut = setTimeout(function() { $("#channel-name").hide(); }, 2000);
+    chanShowTimeOut = setTimeout(function() { $("#channel-name").hide(); }, 5000);
 }
 
 function togglePin () {                
@@ -112,6 +113,7 @@ function previousVideo () {
 
 $(document).ready(function() {
     showLoading();
+    $("#info").hide();
     for (var i = 0; i < channels.length; i++) {
         $('#channels-list').html($('#channels-list').html()+'<div><a id="'+channels[i]+'-button" class="channel-button" href="#'+channels[i]+'">r/'+channels[i]+'</a></div>');
     }
@@ -308,6 +310,7 @@ $(document).ready(function() {
 });
 
 function playVideo (video) {
+    $("#info").hide();
     lastFetchedChannel=video.channel;
       player = new YT.Player('player', {
       height: $(window).height(),
@@ -325,6 +328,12 @@ function playVideo (video) {
         'onStateChange': onPlayerStateChange
       }
     });
+    showInfo(video);
+}
+
+function showInfo (video) {
+    try{clearTimeout(infoShowTimeOut);}catch(e){}
+    infoShowTimeOut=setTimeout(function() { $("#info").fadeIn(); },1000)
     $('#title').text(video.title);
     // <i onclick=toggleChannels() class="ic-button icon-rotate-90 icon-pushpin"></i>&nbsp&nbsp
     // un pinning ui
