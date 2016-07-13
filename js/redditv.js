@@ -62,6 +62,14 @@ function onPlayerReady(event) {
     event.target.playVideo();
 }
 
+function videoExistsInQueue (id) {
+    for (var i = 0; i < videos.length; i++) {
+        if(videos[i].id==id)
+            return true;
+    };
+    return false;
+}
+
 function showChannelName () {
     try{clearTimeout(chanShowTimeOut);}catch(e){}
     $("#channel-name").hide();
@@ -244,7 +252,8 @@ function fetchRedditPage (_subreddit,after) {
                     video.score=s.data.children[i].data.score;
                     video.channel=_subreddit;
                     video.permalink=s.data.children[i].data.permalink;
-                    videos.push(video);
+                    if(!videoExistsInQueue(video.id))
+                        videos.push(video);
                 }
                 
             }catch(e){
