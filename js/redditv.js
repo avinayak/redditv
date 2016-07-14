@@ -15,6 +15,7 @@ var lastFetchedChannel;
 var channels=[
         'YoutubeHaiku',
         'Videos',
+        'gifs',
 
         'AccidentalComedy',
         'ArtisanVideos',
@@ -89,6 +90,11 @@ function onPlayerStateChange(event) {
     }
 }
 
+function onMP4Ended(e) {
+    e.target.remove()
+    nextVideo();
+}
+
 function nextVideo () {
     try{
         player.destroy(); 
@@ -153,12 +159,12 @@ $(document).ready(function() {
             changeChannel(subreddit);
         }
     },500);
-
 });
 
 $(window).on('hashchange', function() {
     changeChannel(window.location.hash.substring(1));
 });
+
 
 $(window).keydown(function (e) {
   if (e.keyCode === 39) {
@@ -254,6 +260,17 @@ function fetchRedditPage (_subreddit,after) {
                     video.permalink=s.data.children[i].data.permalink;
                     if(!videoExistsInQueue(video.id))
                         videos.push(video);
+                }else if(s.data.children[i].data.domain.indexOf('imgur')!=-1){
+                    video.type="mp4";
+                    video.id = s.data.children[i].data.url;
+                    video.url = s.data.children[i].data.url.replace("gifv","mp4").replace("gif","mp4");
+                    video.title=s.data.children[i].data.title;
+                    video.author=s.data.children[i].data.author;
+                    video.score=s.data.children[i].data.score;
+                    video.channel=_subreddit;
+                    video.permalink=s.data.children[i].data.url;
+                    if(!videoExistsInQueue(video.id))
+                        videos.push(video);
                 }
                 
             }catch(e){
@@ -272,16 +289,31 @@ function fetchRedditPage (_subreddit,after) {
 }
 
 function togglePlay () {
-    if(player.getPlayerState()==2){
-        player.playVideo();
-        $("#playbutton").removeClass();
-        $("#playbutton").addClass('ic-button fa fa-pause');
+    if(player){
+        if(player.getPlayerState()==2){
+            player.playVideo();
+            
+            $("#playbutton").addClass('ic-button fa fa-pause');
+        }
+        else if(player.getPlayerState()==1){
+            player.pauseVideo();
+            $("#playbutton").removeClass();
+            $("#playbutton").addClass('ic-button fa fa-play');
+        }
     }
-    else if(player.getPlayerState()==1){
-        player.pauseVideo();
-        $("#playbutton").removeClass();
-        $("#playbutton").addClass('ic-button fa fa-play');
+    if(document.getElementById('MP4Player')){
+        if(document.getElementById('MP4Player').paused){
+            document.getElementById('MP4Player').play()
+            $("#playbutton").removeClass();
+            $("#playbutton").addClass('ic-button fa fa-pause');
+        }
+        else{
+            document.getElementById('MP4Player').pause();
+            $("#playbutton").removeClass();
+            $("#playbutton").addClass('ic-button fa fa-play');
+        }
     }
+
 
 }
 
@@ -324,27 +356,45 @@ function playVideo (video) {
     $("#info").hide();
     if(video)
         lastFetchedChannel=video.channel;
-      player = new YT.Player('player', {
-      height: $(window).height(),
-      width: $(window).width(),
-      videoId: video.id,
-      playerVars: { 
-             'controls': 0, 
-             'rel' : 0,
-             'showinfo':0,
-             'iv_load_policy':3,
-             'autoplay': 1,
-      },
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
-    });
+    $("#MP4Player").remove();
+    if(video.type=='youtube.com'){
+          player = new YT.Player('player', {
+          height: $(window).height(),
+          width: $(window).width(),
+          videoId: video.id,
+          playerVars: { 
+                 'controls': 0, 
+                 'rel' : 0,
+                 'showinfo':0,
+                 'iv_load_policy':3,
+                 'autoplay': 1,
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+    }else if(video.type=='mp4'){
+        $("#player").html(`
+            <video id="MP4Player" autoplay>
+                <source src="${video.url}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>`
+        );
+        $("#MP4Player").width($(window).width());
+        $("#MP4Player").height($(window).height());
+        document.getElementById('MP4Player').addEventListener('ended',onMP4Ended,false);
+    }
     showInfo(video);
 }
 $(window).resize(function () { 
     if(player)
         player.setSize($(window).width(),$(window).height());
+    if($("#MP4Player"))
+    {
+        $("#MP4Player").width($(window).width());
+        $("#MP4Player").height($(window).height());
+    }
 });
 
 function openInYouTube (id) {
@@ -365,7 +415,7 @@ function showInfo (video) {
         <i onclick=openInYouTube("'+video.id+'") class="ic-button fa fa-youtube-play"></i>&nbsp&middot;\
         &nbsp<i onclick=previousVideo() class="ic-button fa fa-step-backward"></i>&nbsp&nbsp\
         <i onclick=togglePlay() id="playbutton" class="ic-button fa fa-pause"></i>&nbsp&nbsp\
-        <i onclick=nextVideo() class="ic-button fa fa-step-forward"></i> &middot; /r/\
-        '+video.channel+" &middot; /u/"+video.author+' &middot; <i class="fa fa-arrow-up"></i> '+video.score);
+        <i onclick=nextVideo() class="ic-button fa fa-step-forward"></i> &middot; /r/'
+        +video.channel+" &middot; /u/"+video.author+' &middot; <i class="fa fa-arrow-up"></i> '+video.score);
     $("#infolink").attr("href", "http://www.reddit.com"+video.permalink);
 }

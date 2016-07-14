@@ -31,7 +31,15 @@
                 height: 100%;
                 top: 0px;
                 left: 0px;
+                z-index: 100;
             }
+
+            #MP4Player{
+                background: black;
+                margin: -8px;
+                z-index: 50;
+            }
+
             a,a:focus{
                 text-decoration: none;
                 color: #fff
