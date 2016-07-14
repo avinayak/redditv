@@ -342,6 +342,10 @@ function playVideo (video) {
     });
     showInfo(video);
 }
+$(window).resize(function () { 
+    if(player)
+        player.setSize($(window).width(),$(window).height());
+});
 
 function openInYouTube (id) {
     player.pauseVideo();
