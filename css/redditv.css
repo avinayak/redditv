@@ -31,12 +31,13 @@
                 height: 100%;
                 top: 0px;
                 left: 0px;
+                z-index: 50;
             }
 
             #MP4Player{
                 background: black;
                 margin: -8px;
-                z-index: 50;
+                z-index: 0;
             }
 
             a,a:focus{

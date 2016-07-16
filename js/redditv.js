@@ -206,6 +206,7 @@ function changeChannel (_channel) {
     subreddit = _channel;
     if(player)
         player.destroy();
+    $("#MP4Player").remove();
     videos=[];
     current=0;
     after_id=null;
@@ -264,6 +265,8 @@ function fetchRedditPage (_subreddit,after) {
                     video.type="mp4";
                     video.id = s.data.children[i].data.url;
                     video.url = s.data.children[i].data.url.replace("gifv","mp4").replace("gif","mp4");
+                    if(!video.url.endsWith("mp4"))
+                        video.url+=".mp4";
                     video.title=s.data.children[i].data.title;
                     video.author=s.data.children[i].data.author;
                     video.score=s.data.children[i].data.score;
@@ -398,11 +401,17 @@ $(window).resize(function () {
 });
 
 function openInYouTube (id) {
-    player.pauseVideo();
-    var time = Math.floor(player.getCurrentTime());
-    if(time/60>0)
-        time=Math.floor(time/60)+"m"+(time%60)+"s";
-    window.open("http://www.youtube.com/watch?t="+time+"&v="+id, "_blank");
+    if(id.indexOf("imgur")!=-1){
+        window.open(id, "_blank");
+    }else{
+        if(player)
+            player.pauseVideo();
+
+        var time = Math.floor(player.getCurrentTime());
+        if(time/60>0)
+            time=Math.floor(time/60)+"m"+(time%60)+"s";
+        window.open("http://www.youtube.com/watch?t="+time+"&v="+id, "_blank");
+    }
 }
 
 function showInfo (video) {
@@ -412,10 +421,10 @@ function showInfo (video) {
     // <i onclick=toggleChannels() class="ic-button icon-rotate-90 icon-pushpin"></i>&nbsp&nbsp
     // un pinning ui
     $('#desc').html('<i onclick=toggleChannels() class="ic-button fa fa-tv"></i>&nbsp&nbsp\
-        <i onclick=openInYouTube("'+video.id+'") class="ic-button fa fa-youtube-play"></i>&nbsp&middot;\
+        <i onclick=openInYouTube("'+video.id+'") class="ic-button fa fa-external-link"></i>&nbsp&middot;\
         &nbsp<i onclick=previousVideo() class="ic-button fa fa-step-backward"></i>&nbsp&nbsp\
         <i onclick=togglePlay() id="playbutton" class="ic-button fa fa-pause"></i>&nbsp&nbsp\
         <i onclick=nextVideo() class="ic-button fa fa-step-forward"></i> &middot; /r/'
-        +video.channel+" &middot; /u/"+video.author+' &middot; <i class="fa fa-arrow-up"></i> '+video.score);
+        +video.channel+' <i class="fa fa-arrow-up"></i> '+video.score);
     $("#infolink").attr("href", "http://www.reddit.com"+video.permalink);
 }
