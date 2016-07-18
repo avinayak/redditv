@@ -15,7 +15,6 @@ var lastFetchedChannel;
 var channels=[
         'YoutubeHaiku',
         'Videos',
-        'gifs',
 
         'AccidentalComedy',
         'ArtisanVideos',
