@@ -430,7 +430,7 @@ function playVideo (video) {
     showInfo(video);
 }
 $(window).resize(function () { 
-    if(player)
+    if(player.getIframe())
         player.setSize($(window).width(),$(window).height());
     if($("#MP4Player"))
     {
