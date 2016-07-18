@@ -5,8 +5,8 @@ Features
 --------
 
 * Watch the most popular video content in couch mode
-* Subreddit not present in the channel list can be opened by changing hashlink ( /redditv/#TheSubredditName )
-* Infinite Content! :blush:
+* Subreddit not present in the channel list can be opened by changing hashlink ( /redditv/#<SubredditName> )
+* Infinite Content!
 
 
 TODO
@@ -14,7 +14,10 @@ TODO
 
  - [x] Faster channel switching
  - [x] Responsive Embed
- - [ ] Add support for gifv and vines
+ - [x] Imgur gif playback
+ - [x] Gfycat playback
+ - [ ] Vine playback
+ - [ ] Autoloop gifs if very short
  - [ ] Ability to binge watch New and Top posts
 
 
