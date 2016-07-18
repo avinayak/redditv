@@ -13,9 +13,10 @@ TODO
 ----
 
  - [x] Faster channel switching
+ - [x] Responsive Embed
  - [ ] Add support for gifv and vines
  - [ ] Ability to binge watch New and Top posts
- - [ ] Responsive Embed
+
 
 License
 -------
