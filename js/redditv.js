@@ -15,6 +15,7 @@ var lastFetchedChannel;
 var channels=[
         'YoutubeHaiku',
         'Videos',
+        'gifs',
 
         'AccidentalComedy',
         'ArtisanVideos',
@@ -28,22 +29,30 @@ var channels=[
         'CuriousVideos',
         'DeepIntoYouTube',
         'Documentaries',
+        'DubbedGIFS',
+        'EarthPornGifs',
+        'EducationalGifs',
         'EducativeVideos',
         'FastWorkers',
         'fifthworldvideos',
         'FightPorn',
         'FuckingWithNature',
+        'FullMovieGifs',
         'HappyCrowds',
         'IdiotsFightingThings',
         'InterdimensionalCable',
+        'K_gifs',
         'Lectures',
         'MealtimeVideos',
         'MotivationVideos',
         'Music',
+        'NatureGifs',
         'ObscureMedia',
         'Playitagainsam',
         'PrematureCelebration',
         'PublicFreakout',
+        'Reactiongifs',
+        'ReverseGIF',
         'RoadCam',
         'StandUpComedy',
         'StreetFights',
@@ -51,9 +60,10 @@ var channels=[
         'TheWayWeWereOnVideo',
         'Trailers',
         'UnexpectedThugLife',
+        'UpvoteGifs',
         'VideoPorn',
         'Vids',
-        'Virtualfreakout',
+        'VirtualFreakout',
         'WoahTube',
 ];
 var subreddit=channels[0];
@@ -145,9 +155,11 @@ $(document).ready(function() {
     // prevent missing videos from stopping
     // auto playback
     setInterval(function(){
-        if(player)
-            if(player.getPlayerState()==-1)
-                nextVideo();
+        try{
+            if(player)
+                if(player.getPlayerState()==-1)
+                    nextVideo();
+        }catch(e){}
     },10000);
     // fast scrolling / long press down-up
     // to change channels handler.
@@ -198,13 +210,18 @@ function closeChannels() {
     $('#channels').fadeOut();
 }
 
+function removeYouTubePlayer () {
+    try{
+        if(player)
+            player.destroy();
+    }catch(e){}
+}
 
 function changeChannel (_channel) {
     showLoading();
     //closeChannels();
     subreddit = _channel;
-    if(player)
-        player.destroy();
+    removeYouTubePlayer()
     $("#MP4Player").remove();
     videos=[];
     current=0;
@@ -260,20 +277,32 @@ function fetchRedditPage (_subreddit,after) {
                     video.permalink=s.data.children[i].data.permalink;
                     if(!videoExistsInQueue(video.id))
                         videos.push(video);
-                }else if(s.data.children[i].data.domain.indexOf('imgur')!=-1){
+                }else if(s.data.children[i].data.domain.indexOf('imgur')!=-1 ){
                     video.type="mp4";
                     video.id = s.data.children[i].data.url;
                     video.url = s.data.children[i].data.url.replace("gifv","mp4").replace("gif","mp4");
-                    if(!video.url.endsWith("mp4"))
+                    if(!video.url.endsWith("mp4") && video.url.split("/")[video.url.split("/").length-1].indexOf(".")==-1)
                         video.url+=".mp4";
                     video.title=s.data.children[i].data.title;
                     video.author=s.data.children[i].data.author;
                     video.score=s.data.children[i].data.score;
                     video.channel=_subreddit;
                     video.permalink=s.data.children[i].data.url;
-                    if(!videoExistsInQueue(video.id))
+                    if(!videoExistsInQueue(video.id) && video.url.endsWith("mp4"))
                         videos.push(video);
-                }
+                }else if(s.data.children[i].data.domain.indexOf('gfy')!=-1 ){
+                    video.type="mp4";
+                    video.id = s.data.children[i].data.url;
+                    video.url = s.data.children[i].data.url;
+                    video.url=video.url.replace("gfycat","giant.gfycat")+".webm";
+                    video.title=s.data.children[i].data.title;
+                    video.author=s.data.children[i].data.author;
+                    video.score=s.data.children[i].data.score;
+                    video.channel=_subreddit;
+                    video.permalink=s.data.children[i].data.url;
+                    if(!videoExistsInQueue(video.id) && video.url.endsWith("webm"))
+                        videos.push(video);
+                } //https://gfycat.com/EasygoingEmbellishedHypacrosaurus
                 
             }catch(e){
                 //TODO: help! i need more video embed support!
@@ -291,7 +320,7 @@ function fetchRedditPage (_subreddit,after) {
 }
 
 function togglePlay () {
-    if(player){
+    if(player.getIframe()){
         if(player.getPlayerState()==2){
             player.playVideo();
             
@@ -315,8 +344,19 @@ function togglePlay () {
             $("#playbutton").addClass('ic-button fa fa-play');
         }
     }
+}
 
-
+function pauseVideo () {
+    if(player.getIframe()){
+        player.pauseVideo();
+        $("#playbutton").removeClass();
+        $("#playbutton").addClass('ic-button fa fa-play');
+    }
+    if(document.getElementById('MP4Player')){
+        document.getElementById('MP4Player').pause();
+        $("#playbutton").removeClass();
+        $("#playbutton").addClass('ic-button fa fa-play');
+    }
 }
 
 // This function checks if the specified event is supported by the browser.
@@ -399,28 +439,30 @@ $(window).resize(function () {
     }
 });
 
-function openInYouTube (id) {
+function openMediaInNewTab (id) {
     if(id.indexOf("imgur")!=-1){
+        pauseVideo();
         window.open(id, "_blank");
     }else{
         if(player)
-            player.pauseVideo();
-
+            pauseVideo();
         var time = Math.floor(player.getCurrentTime());
         if(time/60>0)
             time=Math.floor(time/60)+"m"+(time%60)+"s";
+        else
+            time=(time%60)+"s";
         window.open("http://www.youtube.com/watch?t="+time+"&v="+id, "_blank");
     }
 }
 
 function showInfo (video) {
     try{clearTimeout(infoShowTimeOut);}catch(e){}
-    infoShowTimeOut=setTimeout(function() { $("#info").show(); },100);
+    infoShowTimeOut=setTimeout(function() { $("#info").show(); },1000);
     $('#title').html(video.title);
     // <i onclick=toggleChannels() class="ic-button icon-rotate-90 icon-pushpin"></i>&nbsp&nbsp
     // un pinning ui
     $('#desc').html('<i onclick=toggleChannels() class="ic-button fa fa-tv"></i>&nbsp&nbsp\
-        <i onclick=openInYouTube("'+video.id+'") class="ic-button fa fa-external-link"></i>&nbsp&middot;\
+        <i onclick=openMediaInNewTab("'+video.id+'") class="ic-button fa fa-external-link"></i>&nbsp&middot;\
         &nbsp<i onclick=previousVideo() class="ic-button fa fa-step-backward"></i>&nbsp&nbsp\
         <i onclick=togglePlay() id="playbutton" class="ic-button fa fa-pause"></i>&nbsp&nbsp\
         <i onclick=nextVideo() class="ic-button fa fa-step-forward"></i> &middot; /r/'
