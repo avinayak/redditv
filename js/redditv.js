@@ -291,17 +291,21 @@ function fetchRedditPage (_subreddit,after) {
                     if(!videoExistsInQueue(video.id) && video.url.endsWith("mp4"))
                         videos.push(video);
                 }else if(s.data.children[i].data.domain.indexOf('gfy')!=-1 ){
-                    video.type="mp4";
-                    video.id = s.data.children[i].data.url;
-                    video.url = s.data.children[i].data.url;
-                    video.url=video.url.replace("gfycat","giant.gfycat")+".webm";
-                    video.title=s.data.children[i].data.title;
-                    video.author=s.data.children[i].data.author;
-                    video.score=s.data.children[i].data.score;
-                    video.channel=_subreddit;
-                    video.permalink=s.data.children[i].data.url;
-                    if(!videoExistsInQueue(video.id) && video.url.endsWith("webm"))
-                        videos.push(video);
+
+                    $.get(s.data.children[i].data.url.replace("com/","com/cjax/get/"),function(res) {
+                        video.type="mp4";
+                        video.id = s.data.children[i].data.url;
+                        video.url = res.gfyItem.mp4Url;
+                        video.title=s.data.children[i].data.title;
+                        video.author=s.data.children[i].data.author;
+                        video.score=s.data.children[i].data.score;
+                        video.channel=_subreddit;
+                        video.permalink=s.data.children[i].data.url;
+                        if(!videoExistsInQueue(video.id))
+                            videos.push(video);
+                    });
+
+
                 } //https://gfycat.com/EasygoingEmbellishedHypacrosaurus
                 
             }catch(e){
