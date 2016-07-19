@@ -292,7 +292,7 @@ function fetchRedditPage (_subreddit,after) {
                         videos.push(video);
                 }else if(s.data.children[i].data.domain.indexOf('gfy')!=-1 ){
 
-                    $.get(s.data.children[i].data.url.replace("com/","com/cjax/get/"),function(res) {
+                    $.get(s.data.children[i].data.url.replace("com/","com/cajax/get/"),function(res) {
                         video.type="mp4";
                         video.id = s.data.children[i].data.url;
                         video.url = res.gfyItem.mp4Url;
