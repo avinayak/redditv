@@ -277,6 +277,7 @@ function fetchRedditPage (_subreddit,after) {
                     video.permalink=s.data.children[i].data.permalink;
                     if(!videoExistsInQueue(video.id))
                         videos.push(video);
+
                 }else if(s.data.children[i].data.domain.indexOf('imgur')!=-1 ){
                     video.type="mp4";
                     video.id = s.data.children[i].data.url;
@@ -290,21 +291,19 @@ function fetchRedditPage (_subreddit,after) {
                     video.permalink=s.data.children[i].data.url;
                     if(!videoExistsInQueue(video.id) && video.url.endsWith("mp4"))
                         videos.push(video);
+
                 }else if(s.data.children[i].data.domain.indexOf('gfy')!=-1 ){
-
-                    $.get(s.data.children[i].data.url.replace("com/","com/cajax/get/"),function(res) {
-                        video.type="mp4";
-                        video.id = s.data.children[i].data.url;
-                        video.url = res.gfyItem.mp4Url;
-                        video.title=s.data.children[i].data.title;
-                        video.author=s.data.children[i].data.author;
-                        video.score=s.data.children[i].data.score;
-                        video.channel=_subreddit;
-                        video.permalink=s.data.children[i].data.url;
-                        if(!videoExistsInQueue(video.id))
-                            videos.push(video);
-                    });
-
+                    var video={};
+                    video.type="mp4";
+                    video.id = s.data.children[i].data.url;
+                    video.url = s.data.children[i].data.url.replace("com/","com/cajax/get/").replace("http:","https:");
+                    video.title=s.data.children[i].data.title;
+                    video.author=s.data.children[i].data.author;
+                    video.score=s.data.children[i].data.score;
+                    video.channel=_subreddit;
+                    video.permalink=s.data.children[i].data.url;
+                    if(!videoExistsInQueue(video.id))
+                        videos.push(video);
 
                 } //https://gfycat.com/EasygoingEmbellishedHypacrosaurus
                 
@@ -398,16 +397,16 @@ $(document).ready(function() {
     });
 });
 
-function playVideo (video) {
+function playVideo (vid_current) {
     $("#info").hide();
-    if(video)
-        lastFetchedChannel=video.channel;
+    if(vid_current)
+        lastFetchedChannel=vid_current.channel;
     $("#MP4Player").remove();
-    if(video.type=='youtube.com'){
+    if(vid_current.type=='youtube.com'){
           player = new YT.Player('player', {
           height: $(window).height(),
           width: $(window).width(),
-          videoId: video.id,
+          videoId: vid_current.id,
           playerVars: { 
                  'controls': 0, 
                  'rel' : 0,
@@ -420,18 +419,37 @@ function playVideo (video) {
             'onStateChange': onPlayerStateChange
           }
         });
-    }else if(video.type=='mp4'){
-        $("#player").html(`
-            <video id="MP4Player" autoplay>
-                <source src="${video.url}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>`
-        );
-        $("#MP4Player").width($(window).width());
-        $("#MP4Player").height($(window).height());
-        document.getElementById('MP4Player').addEventListener('ended',onMP4Ended,false);
+    }else if(vid_current.type=='mp4'){
+
+        if(vid_current.url.indexOf("gfy")!=-1){
+            $.get(vid_current.url,function(res){
+                $("#player").html(`
+                    <video id="MP4Player" autoplay>
+                        <source src="${res.gfyItem.mp4Url}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>`
+                );
+                $("#MP4Player").width($(window).width());
+                $("#MP4Player").height($(window).height());
+                document.getElementById('MP4Player').addEventListener('ended',onMP4Ended,false);
+                showInfo(vid_current);
+            })
+        }else{
+            $("#player").html(`
+                <video id="MP4Player" autoplay>
+                    <source src="${vid_current.url}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`
+            );
+        }
+        try{
+            $("#MP4Player").width($(window).width());
+            $("#MP4Player").height($(window).height());
+            document.getElementById('MP4Player').addEventListener('ended',onMP4Ended,false);
+        }catch(e){}
+
     }
-    showInfo(video);
+    showInfo(vid_current);
 }
 $(window).resize(function () { 
     if(player.getIframe())
