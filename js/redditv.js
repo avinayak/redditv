@@ -490,7 +490,7 @@ function openMediaInNewTab (id) {
 
 function showInfo (video) {
     try{clearTimeout(infoShowTimeOut);}catch(e){}
-    infoShowTimeOut=setTimeout(function() { $("#info").show(); },500);
+    infoShowTimeOut=setTimeout(function() { $("#info").show(); },1000);
     $('#title').html(video.title);
     // <i onclick=toggleChannels() class="ic-button icon-rotate-90 icon-pushpin"></i>&nbsp&nbsp
     // un pinning ui
