@@ -292,7 +292,7 @@ function fetchRedditPage (_subreddit,after) {
                     video.author=s.data.children[i].data.author;
                     video.score=s.data.children[i].data.score;
                     video.channel=_subreddit;
-                    video.permalink=s.data.children[i].data.url;
+                    video.permalink=s.data.children[i].data.permalink;
                     if(!videoExistsInQueue(video.id) && video.url.endsWith("mp4"))
                         videos.push(video);
 
@@ -305,7 +305,7 @@ function fetchRedditPage (_subreddit,after) {
                     video.author=s.data.children[i].data.author;
                     video.score=s.data.children[i].data.score;
                     video.channel=_subreddit;
-                    video.permalink=s.data.children[i].data.url;
+                    video.permalink=s.data.children[i].data.permalink;
                     if(!videoExistsInQueue(video.id))
                         videos.push(video);
 
@@ -406,7 +406,7 @@ function startUnLoopingTimer(){
     clearTimeout(unLoopTimeOut);
     unLoopTimeOut = setTimeout(function(){
         $("#MP4Player").removeAttr("loop");
-    },10000);
+    },7000);    // inspired by Vine :)
 }
 
 function playVideo (vid_current) {
