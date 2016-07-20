@@ -10,7 +10,7 @@
                 margin: 48px 0px;
             }
             #channels {
-                font-family: 'VT323';
+                
                 color: white;
                 position: fixed;
                 top: 0px;
@@ -32,6 +32,18 @@
                 top: 8%;
                 left: 0px;
                 z-index: 50;
+            }
+
+            #error {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                color: white;
+                font-size: 46px;
+                font-family: 'VT323';
+                z-index: 70;
+                text-shadow: -1px 1px black;
+                display: none;
             }
 
             #MP4Player{

@@ -20,7 +20,6 @@ var channels=[
         'AccidentalComedy',
         'ArtisanVideos',
         'AwfulCommercials',
-        'CombatFootage',
         'CommercialCuts',
         'ContagiousLaughter',
         'ConTalks',
@@ -30,28 +29,28 @@ var channels=[
         'DeepIntoYouTube',
         'Documentaries',
         'DubbedGIFS',
-        'EarthPornGifs',
-        'EducationalGifs',
+        'EarthPornGIFS',
+        'EducationalGIFS',
         'EducativeVideos',
         'FastWorkers',
-        'fifthworldvideos',
-        'FightPorn',
+        'FifthWorldVideos',
         'FuckingWithNature',
-        'FullMovieGifs',
+        'FullMovieGIFS',
         'HappyCrowds',
+        'HighQualityGIFS',
         'IdiotsFightingThings',
-        'InterdimensionalCable',
-        'K_gifs',
+        'InterDimensionalCable',
+        'K_GIFS',
         'Lectures',
         'MealtimeVideos',
         'MotivationVideos',
         'Music',
-        'NatureGifs',
+        'NatureGIFS',
         'ObscureMedia',
-        'Playitagainsam',
+        'PlayItAgainSam',
         'PrematureCelebration',
         'PublicFreakout',
-        'Reactiongifs',
+        'ReactionGIFS',
         'ReverseGIF',
         'RoadCam',
         'StandUpComedy',
@@ -60,11 +59,12 @@ var channels=[
         'TheWayWeWereOnVideo',
         'Trailers',
         'UnexpectedThugLife',
-        'UpvoteGifs',
+        'UpvoteGIFS',
         'VideoPorn',
         'Vids',
         'VirtualFreakout',
-        'WoahTube',
+        'WoahDude',
+        'WTF',
 ];
 var subreddit=channels[0];
 // autoplay video
@@ -176,6 +176,9 @@ $(window).on('hashchange', function() {
     changeChannel(window.location.hash.substring(1));
 });
 
+function mp4ErrorHandler(){ 
+    nextVideo();
+}
 
 $(window).keydown(function (e) {
   if (e.keyCode === 39) {
@@ -424,8 +427,7 @@ function playVideo (vid_current) {
         if(vid_current.url.indexOf("gfy")!=-1){
             $.get(vid_current.url,function(res){
                 $("#player").html(`
-                    <video id="MP4Player" autoplay>
-                        <source src="${res.gfyItem.mp4Url}" type="video/mp4">
+                    <video id="MP4Player" src="${res.gfyItem.mp4Url}" autoplay onerror="mp4ErrorHandler()" >
                         Your browser does not support the video tag.
                     </video>`
                 );
@@ -436,8 +438,7 @@ function playVideo (vid_current) {
             })
         }else{
             $("#player").html(`
-                <video id="MP4Player" autoplay>
-                    <source src="${vid_current.url}" type="video/mp4">
+                <video id="MP4Player" src="${vid_current.url}" autoplay onerror="mp4ErrorHandler()">
                     Your browser does not support the video tag.
                 </video>`
             );
@@ -479,7 +480,7 @@ function openMediaInNewTab (id) {
 
 function showInfo (video) {
     try{clearTimeout(infoShowTimeOut);}catch(e){}
-    infoShowTimeOut=setTimeout(function() { $("#info").show(); },1000);
+    infoShowTimeOut=setTimeout(function() { $("#info").show(); },500);
     $('#title').html(video.title);
     // <i onclick=toggleChannels() class="ic-button icon-rotate-90 icon-pushpin"></i>&nbsp&nbsp
     // un pinning ui
