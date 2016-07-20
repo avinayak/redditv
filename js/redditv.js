@@ -10,6 +10,7 @@ var after_id;
 var chanShowTimeOut;
 var infoShowTimeOut;
 var lastFetchedChannel;
+var unLoopTimeOut;
 // Suggestions Welcome! Please Sort Alphabetically
 // Except First two. 
 var channels=[
@@ -400,7 +401,16 @@ $(document).ready(function() {
     });
 });
 
+function startUnLoopingTimer(){
+    
+    clearTimeout(unLoopTimeOut);
+    unLoopTimeOut = setTimeout(function(){
+        $("#MP4Player").removeAttr("loop");
+    },10000);
+}
+
 function playVideo (vid_current) {
+    clearTimeout(unLoopTimeOut);
     $("#info").hide();
     if(vid_current)
         lastFetchedChannel=vid_current.channel;
@@ -427,7 +437,7 @@ function playVideo (vid_current) {
         if(vid_current.url.indexOf("gfy")!=-1){
             $.get(vid_current.url,function(res){
                 $("#player").html(`
-                    <video id="MP4Player" src="${res.gfyItem.mp4Url}" autoplay onerror="mp4ErrorHandler()" >
+                    <video id="MP4Player" src="${res.gfyItem.mp4Url}" autoplay loop onplay="startUnLoopingTimer()" onerror="mp4ErrorHandler()" >
                         Your browser does not support the video tag.
                     </video>`
                 );
@@ -438,7 +448,7 @@ function playVideo (vid_current) {
             })
         }else{
             $("#player").html(`
-                <video id="MP4Player" src="${vid_current.url}" autoplay onerror="mp4ErrorHandler()">
+                <video id="MP4Player" src="${vid_current.url}" autoplay loop onplay="startUnLoopingTimer()" onerror="mp4ErrorHandler()">
                     Your browser does not support the video tag.
                 </video>`
             );
