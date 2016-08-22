@@ -36,7 +36,7 @@ var channels=[
         'FastWorkers',
         'FifthWorldVideos',
         'FuckingWithNature',
-        'GifRecipes'
+        'GifRecipes',
         'HappyCrowds',
         'HighQualityGIFS',
         'IdiotsFightingThings',
