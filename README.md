@@ -17,8 +17,9 @@ TODO
  - [x] Imgur gif playback
  - [x] Gfycat playback
  - [ ] Vine playback
- - [ ] Autoloop gifs if very short
+ - [x] Autoloop gifs if very short
  - [ ] Ability to binge watch New and Top posts
+ - [ ] Mobile version! 
 
 
 License
