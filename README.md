@@ -16,10 +16,10 @@ TODO
  - [x] Responsive Embed
  - [x] Imgur gif playback
  - [x] Gfycat playback
- - [ ] Vine playback
  - [x] Autoloop gifs if very short
  - [ ] Ability to binge watch New and Top posts
- - [ ] Mobile version! 
+ - [ ] Mobile version
+ - [ ] Use a Phone as a Remote Using socket.io/WebRTC ??
 
 
 License
