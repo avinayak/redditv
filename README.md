@@ -20,6 +20,7 @@ TODO
  - [ ] Ability to binge watch New and Top posts
  - [ ] Mobile version
  - [ ] Use a Phone as a Remote Using socket.io/WebRTC ??
+ - [ ] 9GAG.tv channel
 
 
 License
