@@ -21,6 +21,7 @@ TODO
  - [ ] Mobile version
  - [ ] Use a Phone as a Remote Using socket.io/WebRTC ??
  - [ ] 9GAG.tv channel
+ - [ ] Random Channel
 
 
 License
