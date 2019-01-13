@@ -21,6 +21,7 @@ var channels=[
         'oddlysatisfying',
         'Documentaries',
         'combinedgifs',
+        'fullmoviesonyoutube',
         
         'AccidentalComedy',
         'ArtisanVideos',
@@ -37,6 +38,7 @@ var channels=[
         'EarthPornGIFS',
         'EducationalGIFS',
         'EducativeVideos',
+        'emulation',
         'FastWorkers',
         'FifthWorldVideos',
         'FuckingWithNature',
