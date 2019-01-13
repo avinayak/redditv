@@ -63,7 +63,7 @@ var channels=[
         'StandUpComedy',
         'StreetFights',
         'SweetJustice',
-        'thalassophobia'
+        'thalassophobia',
         'TheWayWeWereOnVideo',
         'Trailers',
         'UnexpectedThugLife',
