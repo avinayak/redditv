@@ -14,7 +14,7 @@ var unLoopTimeOut;
 // Suggestions Welcome! Please Sort Alphabetically
 // Except First two. 
 var channels=[
-        'WoahDude',
+        
         'Videos',
          'YoutubeHaiku',
         'gifs',
@@ -71,7 +71,7 @@ var channels=[
         'VideoPorn',
         'Vids',
         'VirtualFreakout',
-        
+        'WoahDude',
         'WTF',
 
 ];
